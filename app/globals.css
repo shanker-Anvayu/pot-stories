@@ -1,26 +1,327 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-forest-950: #0e1d15;
+  --color-forest-900: #14281d;
+  --color-forest-800: #1b3527;
+  --color-forest-700: #234331;
+  --color-forest-600: #2e5540;
+  --color-forest-500: #3f6b52;
+
+  --color-sage-50: #f4f6f1;
+  --color-sage-100: #e9eee4;
+  --color-sage-200: #d8e1cf;
+  --color-sage-300: #c0cfb4;
+  --color-sage-400: #a2b693;
+  --color-sage-500: #829a74;
+  --color-sage-600: #66805b;
+
+  --color-ivory: #f6f2e7;
+  --color-card: #fcf9f1;
+  --color-cream: #eee8d8;
+  --color-sand: #e2d7bf;
+  --color-oat: #d9cbb0;
+  --color-clay: #b65d33;
+  --color-clay-dark: #94482a;
+  --color-leaf: #cfe1a0;
+  --color-leaf-dark: #b8cf7f;
+  --color-ink: #18201b;
+  --color-moss: #56664f;
+
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-drawer: cubic-bezier(0.165, 0.84, 0.44, 1);
+  --ease-rise: cubic-bezier(0.26, 0.54, 0.32, 1);
+
+  --animate-marquee: marquee 40s linear infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-marquee {
+    animation: none;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-ivory);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
 }
+
+::selection {
+  background: var(--color-sage-300);
+  color: var(--color-forest-900);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-clay);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+@layer components {
+  .container-page {
+    width: 100%;
+    max-width: 88rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 640px) {
+    .container-page {
+      padding-inline: 2rem;
+    }
+  }
+  @media (min-width: 1280px) {
+    .container-page {
+      padding-inline: 3rem;
+    }
+  }
+
+  /* Heavy, soft display face for campaign headlines */
+  .display-heavy {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-variation-settings: "SOFT" 100, "opsz" 96;
+    letter-spacing: -0.015em;
+    line-height: 1.02;
+  }
+
+  .nav-caps {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .rail {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 1.25rem;
+    margin-inline: -1.25rem;
+    padding-inline: 1.25rem;
+    padding-bottom: 0.25rem;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .rail::-webkit-scrollbar {
+    display: none;
+  }
+  .rail > * {
+    scroll-snap-align: start;
+    flex: 0 0 auto;
+  }
+  @media (min-width: 640px) {
+    .rail {
+      margin-inline: -2rem;
+      padding-inline: 2rem;
+      scroll-padding-inline: 2rem;
+    }
+  }
+
+  .eyebrow {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    border-radius: 999px;
+    padding: 0.8rem 1.5rem;
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    transition:
+      background-color 0.25s var(--ease-drawer),
+      color 0.25s var(--ease-drawer),
+      border-color 0.25s var(--ease-drawer),
+      box-shadow 0.25s var(--ease-drawer),
+      transform 0.15s ease-out;
+  }
+  .btn:hover {
+    box-shadow: 0 6px 18px -10px rgba(20, 40, 29, 0.55);
+  }
+  .btn:active {
+    transform: scale(0.97);
+  }
+  .btn-leaf {
+    background: var(--color-leaf);
+    color: var(--color-forest-900);
+    border: 1px solid var(--color-forest-900);
+  }
+  .btn-leaf:hover {
+    background: var(--color-leaf-dark);
+  }
+  .btn-primary {
+    background: var(--color-forest-800);
+    color: var(--color-ivory);
+  }
+  .btn-primary:hover {
+    background: var(--color-forest-950);
+  }
+  .btn-light {
+    background: var(--color-ivory);
+    color: var(--color-forest-900);
+  }
+  .btn-light:hover {
+    background: var(--color-sage-100);
+  }
+  .btn-outline {
+    border: 1px solid currentColor;
+  }
+  .btn-outline:hover {
+    background: color-mix(in oklab, currentColor 10%, transparent);
+  }
+
+  .link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.45s var(--ease-soft);
+  }
+  .link-underline:hover,
+  .link-underline:focus-visible {
+    background-size: 100% 1px;
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .grain {
+    position: relative;
+  }
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.06;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+/* ==========================================================================
+   Homepage motion layer (components/motion, components/home)
+   Appended block — compositor-only animations; all disabled for reduced motion.
+   ========================================================================== */
+
+/* Constant-speed marquee: --marquee-shift (px, one copy) and --marquee-duration
+   (s) are computed in JS from the measured width so speed is a px/s value. */
+@keyframes ps-marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(calc(-1 * var(--marquee-shift, 50%)), 0, 0);
+  }
+}
+.ps-marquee-track {
+  animation: ps-marquee var(--marquee-duration, 20s) linear infinite;
+  animation-play-state: paused;
+  will-change: transform;
+}
+.ps-marquee[data-running="true"] .ps-marquee-track {
+  animation-play-state: running;
+}
+.ps-marquee[data-hover-pause="true"]:hover .ps-marquee-track {
+  animation-play-state: paused;
+}
+
+/* Slide progress bars (hero, showcase): a real CSS timer that can pause and resume. */
+@keyframes ps-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.ps-progress {
+  transform-origin: left center;
+  animation: ps-progress var(--progress-duration, 6.5s) linear forwards;
+}
+
+/* Gentle float for the showcase plant */
+@keyframes ps-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(0, -12px, 0) rotate(-0.8deg);
+  }
+}
+.ps-float {
+  animation: ps-float 6.5s ease-in-out infinite;
+}
+@keyframes ps-shadow-breathe {
+  0%,
+  100% {
+    transform: scaleX(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scaleX(0.88);
+    opacity: 0.6;
+  }
+}
+.ps-shadow-breathe {
+  animation: ps-shadow-breathe 6.5s ease-in-out infinite;
+}
+
+/* Outlined display type for editorial accents */
+.ps-outline-text {
+  color: transparent;
+  -webkit-text-stroke: 1px currentColor;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ps-marquee-track,
+  .ps-float,
+  .ps-shadow-breathe {
+    animation: none !important;
+  }
+  .ps-progress {
+    animation: none;
+    transform: scaleX(1);
+  }
+}
+/* ======================= end homepage motion layer ======================= */

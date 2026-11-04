@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local demo backend data (users, orders, uploads)
+.data/
+# keep the env template in git
+!.env.example
