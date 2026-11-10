@@ -56,6 +56,39 @@ Force the same mode locally with `DEMO_READ_ONLY=true`.
 4. Make an admin: `update public.profiles set role = 'admin' where email = 'you@example.com';`
 5. Restart the server. The demo database is no longer used.
 
+### Auth settings (Supabase dashboard → Authentication)
+
+- **URL Configuration** → Site URL = production URL (e.g. `https://<your-domain>`).
+  Redirect URLs: `http://localhost:3000/auth/callback`, `http://localhost:3100/auth/callback`,
+  `https://<your-domain>/auth/callback` (and `https://*-<team>.vercel.app/auth/callback` for previews if wanted).
+- **Sign In / Providers → Email**: keep *Confirm email* on for production.
+- **Emails → SMTP**: the built-in sender only delivers to project team members and is heavily
+  rate-limited. Configure a custom SMTP provider before real customers sign up.
+- **Emails → Templates** (recommended, works across devices): use the `token_hash` link, e.g.
+  Confirm signup: `{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=signup&next=/account`
+  Reset password: `{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=recovery&next=/account/reset-password`
+
+### Vercel (backend mode)
+
+Add in Vercel → Project → Settings → Environment Variables (Production and, if wanted, Preview):
+`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` (mark Sensitive),
+`NEXT_PUBLIC_SITE_URL` (the production URL). Do **not** add `SESSION_SECRET`, `DEMO_*` or `RAZORPAY_*`.
+Once the Supabase values are set the browse-only preview switches off automatically on the next deploy.
+
+## Tests
+
+```bash
+npm run typecheck && npm run lint && npm run build
+npx playwright install chromium        # once
+npm run start -- -p 3100 &             # or let Playwright start `next dev`
+E2E_BASE_URL=http://localhost:3100 npm run test:e2e
+```
+
+The e2e suite (`e2e/`) uses the service-role key from `.env.local` to create throw-away confirmed
+users (one promoted to admin), exercises auth, customer, checkout (demo), admin product management
+and RLS, then deletes its users, orders, products and uploads and restores stock. Run it only against
+a project whose data you are happy for tests to touch.
+
 See `supabase/README.md` for details and `docs/backend/data-model.md` for the schema and RLS rules.
 
 ## Switching on Razorpay (test mode)

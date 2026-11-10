@@ -44,3 +44,10 @@ next-env.d.ts
 .data/
 # keep the env template in git
 !.env.example
+
+# supabase cli local state
+supabase/.temp/
+
+# playwright
+/test-results/
+/playwright-report/
